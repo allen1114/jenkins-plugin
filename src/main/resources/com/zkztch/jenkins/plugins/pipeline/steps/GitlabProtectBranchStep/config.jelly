@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry field="host" title="host">
+        <f:textbox/>
+    </f:entry>
+    <f:entry field="token" title="token">
+        <f:textbox/>
+    </f:entry>
+    <f:entry field="namespace" title="namespace">
+        <f:textbox/>
+    </f:entry>
+    <f:entry field="project" title="project">
+        <f:textbox/>
+    </f:entry>
+    <f:entry field="branch" title="branch">
+        <f:textbox/>
+    </f:entry>
+    <f:entry field="level" title="level">
+        <select name="level">
+            <option value="NONE" selected="true">NONE</option>
+            <option value="GUEST">GUEST</option>
+            <option value="REPORTER">REPORTER</option>
+            <option value="DEVELOPER">DEVELOPER</option>
+            <option value="MAINTAINER">MAINTAINER</option>
+            <option value="OWNER">OWNER</option>
+            <option value="ADMIN">ADMIN</option>
+        </select>
+    </f:entry>
+</j:jelly>
