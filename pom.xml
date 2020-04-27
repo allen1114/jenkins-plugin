@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.zkztch</groupId>
     <artifactId>zkztch-jenkins-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>hpi</packaging>
     <properties>
         <java.level>8</java.level>
@@ -176,7 +176,7 @@
     </distributionManagement>
 
 
-    
+
     <build>
         <plugins>
             <plugin>
