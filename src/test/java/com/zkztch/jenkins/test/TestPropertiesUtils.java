@@ -1,4 +1,4 @@
-package com.zkztch.jenkins.plugins;
+package com.zkztch.jenkins.test;
 
 import java.io.File;
 import java.io.FileInputStream;

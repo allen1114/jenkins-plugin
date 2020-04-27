@@ -1,7 +1,7 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
-import com.zkztch.jenkins.plugins.Gitlab;
-import com.zkztch.jenkins.plugins.JenkinsUtils;
+import com.zkztch.jenkins.test.Gitlab;
+import com.zkztch.jenkins.test.Jenkins;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.AccessLevel;
@@ -15,8 +15,8 @@ import org.jvnet.hudson.test.JenkinsRule;
 @Slf4j
 public class GitlabUnprotectBranchStepTest {
 
-    @ClassRule public static final BuildWatcher buildWatcher = JenkinsUtils.buildWatcher;
-    @ClassRule public static final JenkinsRule jenkinsRule = JenkinsUtils.jenkinsRule;
+    @ClassRule public static final BuildWatcher buildWatcher = Jenkins.buildWatcher;
+    @ClassRule public static final JenkinsRule jenkinsRule = Jenkins.jenkinsRule;
     private Project project;
 
     @Before

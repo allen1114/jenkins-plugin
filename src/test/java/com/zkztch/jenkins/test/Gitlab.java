@@ -1,4 +1,4 @@
-package com.zkztch.jenkins.plugins;
+package com.zkztch.jenkins.test;
 
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;

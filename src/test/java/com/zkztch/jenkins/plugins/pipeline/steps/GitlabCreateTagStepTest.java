@@ -1,7 +1,7 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
-import com.zkztch.jenkins.plugins.Gitlab;
-import com.zkztch.jenkins.plugins.JenkinsUtils;
+import com.zkztch.jenkins.test.Gitlab;
+import com.zkztch.jenkins.test.Jenkins;
 import hudson.model.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -15,14 +15,13 @@ import org.junit.*;
 import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
 public class GitlabCreateTagStepTest {
 
-    @ClassRule public static final BuildWatcher buildWatcher = JenkinsUtils.buildWatcher;
-    @ClassRule public static final JenkinsRule jenkinsRule = JenkinsUtils.jenkinsRule;
+    @ClassRule public static final BuildWatcher buildWatcher = Jenkins.buildWatcher;
+    @ClassRule public static final JenkinsRule jenkinsRule = Jenkins.jenkinsRule;
 
     private Project project;
     private final String tag = "t1";
