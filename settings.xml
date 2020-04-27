@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <servers>
+	<server>
+      <id>maven-snapshots</id>
+      <username>admin</username>
+      <password>admin.hunter</password>
+    </server>
+	 <server>
+      <id>maven-releases</id>
+      <username>admin</username>
+      <password>admin.hunter</password>
+    </server>
+
+  </servers>
+  <mirrors>
+
+	 <mirror>
+		<id>nexus-aliyun</id>
+		<name>nexus-aliyun</name>
+		<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		<mirrorOf>central</mirrorOf>
+	</mirror>
+
+  </mirrors>
+
+  <profiles>
+	<profile>
+		<id>jenkins_repository</id>
+		<repositories>
+			<repository>
+			  <id>repo.jenkins-ci.org</id>
+			  <url>https://repo.jenkins-ci.org/public/</url>
+			  <releases>
+				<enabled>true</enabled>
+			  </releases>
+			  <snapshots>
+				<enabled>true</enabled>
+			  </snapshots>
+			</repository>
+		</repositories>
+		<pluginRepositories>
+			<pluginRepository>
+			  <id>repo.jenkins-ci.org</id>
+			  <url>https://repo.jenkins-ci.org/public/</url>
+			</pluginRepository>
+		</pluginRepositories>
+	</profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>jenkins_repository</activeProfile>
+  </activeProfiles>
+</settings>
