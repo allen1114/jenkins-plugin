@@ -90,6 +90,11 @@ public class GitlabCreateBranchStep extends GitlabBaseStep {
         for (Branch b : branchList) {
             if (StringUtils.equals(b.getName(), branch)) {
                 if (force) {
+                    try {
+                        gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
+                    } catch (Exception ignored) {
+
+                    }
                     gitLabApi.getRepositoryApi().deleteBranch(pro, branch);
                     break;
                 } else {

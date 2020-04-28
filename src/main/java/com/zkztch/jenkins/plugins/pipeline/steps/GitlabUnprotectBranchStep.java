@@ -61,11 +61,10 @@ public class GitlabUnprotectBranchStep extends GitlabBaseStep {
     @Override
     public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi) throws Exception {
         Project pro = gitLabApi.getProjectApi().getProject(namespace, project);
-        for (ProtectedBranch protectedBranch : gitLabApi.getProtectedBranchesApi().getProtectedBranches(pro)) {
-            if (protectedBranch.getName().equals(branch)) {
-                gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
-                break;
-            }
+        try {
+            gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
+        } catch (Exception ignored) {
+
         }
     }
 

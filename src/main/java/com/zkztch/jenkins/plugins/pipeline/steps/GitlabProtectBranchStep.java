@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.models.AccessLevel;
 import org.gitlab4j.api.models.Project;
-import org.gitlab4j.api.models.ProtectedBranch;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -77,11 +76,10 @@ public class GitlabProtectBranchStep extends GitlabBaseStep {
 
         AccessLevel accessLevel = AccessLevel.valueOf(level);
         Project pro = gitLabApi.getProjectApi().getProject(namespace, project);
-        for (ProtectedBranch protectedBranch : gitLabApi.getProtectedBranchesApi().getProtectedBranches(pro)) {
-            if (protectedBranch.getName().equals(branch)) {
-                gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
-                break;
-            }
+        try {
+            gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
+        } catch (Exception ignored) {
+
         }
         gitLabApi.getProtectedBranchesApi().protectBranch(pro, branch, accessLevel, accessLevel);
     }

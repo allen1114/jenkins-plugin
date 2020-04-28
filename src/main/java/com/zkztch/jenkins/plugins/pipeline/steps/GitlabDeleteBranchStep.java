@@ -65,6 +65,11 @@ public class GitlabDeleteBranchStep extends GitlabBaseStep {
         List<Branch> branchList = gitLabApi.getRepositoryApi().getBranches(pro);
         for (Branch b : branchList) {
             if (StringUtils.equals(b.getName(), branch)) {
+                try {
+                    gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
+                } catch (Exception ignored) {
+
+                }
                 gitLabApi.getRepositoryApi().deleteBranch(pro, branch);
                 break;
             }
