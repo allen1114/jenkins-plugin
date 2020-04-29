@@ -112,4 +112,44 @@ public class GitlabCommitWithTagConditionalTest {
         jenkinsRule.waitUntilNoActivity();
 
     }
+
+
+    @Test
+    public void skipWhenTagNotMatchWithEnv() throws Exception {
+
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    environment {\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "    }\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            when {\n" +
+                "                gitlabCommitWithTag \"%s_1\"\n" +
+                "            }\n" +
+                "            steps {\n" +
+                "                echo \"${%s} matched\"\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script =
+                String.format(format, GitlabConsts.GITLAB_HOST, Gitlab.host,
+                        GitlabConsts.GITLAB_TOKEN, Gitlab.token,
+                        GitlabConsts.GITLAB_NAMESPACE, project.getNamespace().getPath(),
+                        GitlabConsts.GITLAB_PROJECT, project.getPath(),
+                        GitSCM.GIT_COMMIT, commit, tag, GitSCM.GIT_COMMIT);
+
+        log.info("script = " + script);
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, project.getName());
+        job.setDefinition(new CpsFlowDefinition(script, true));
+
+        jenkinsRule.assertLogNotContains(commit + " matched", jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0)));
+        jenkinsRule.waitUntilNoActivity();
+
+    }
 }

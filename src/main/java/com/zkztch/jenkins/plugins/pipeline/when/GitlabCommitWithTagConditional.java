@@ -80,20 +80,17 @@ public class GitlabCommitWithTagConditional extends DeclarativeStageConditional<
         String namespace = this.namespace == null ? enamespace : this.namespace;
         String project = this.project == null ? eproject : this.project;
 
-        try {
-            GitLabApi gitLabApi = new GitLabApi(host, token);
-            gitLabApi.setIgnoreCertificateErrors(true);
-            Project pro = gitLabApi.getProjectApi().getProject(namespace, project);
-            List<Tag> tags = gitLabApi.getTagsApi().getTags(pro);
-            for (Tag tag : tags) {
-                if (StringUtils.endsWithIgnoreCase(tag.getCommit().getId(), commit) || tag.getName().matches(pattern)) {
-                    return true;
-                }
+        GitLabApi gitLabApi = new GitLabApi(host, token);
+        gitLabApi.setIgnoreCertificateErrors(true);
+        Project pro = gitLabApi.getProjectApi().getProject(namespace, project);
+        List<Tag> tags = gitLabApi.getTagsApi().getTags(pro);
+        for (Tag tag : tags) {
+            if (StringUtils.equalsIgnoreCase(tag.getCommit().getId(), commit) && tag.getName().matches(pattern)) {
+                return true;
             }
-            return false;
-        } catch (Exception e) {
-            return false;
         }
+        return false;
+
     }
 
     @Extension
