@@ -1,8 +1,10 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
+import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
 import com.zkztch.jenkins.test.Gitlab;
 import com.zkztch.jenkins.test.Jenkins;
 import hudson.model.Result;
+import hudson.plugins.git.GitSCM;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab4j.api.GitLabApiException;
@@ -15,6 +17,7 @@ import org.junit.*;
 import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +39,51 @@ public class GitlabCreateBranchStepTest {
     public void clean() throws GitLabApiException {
         log.info("clean");
         Gitlab.deleteProject(project);
+    }
+
+    @Test
+    public void stepWithEvn() throws Exception {
+
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    environment {\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "    }\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "                gitlabCreateBranch branch: \"%s\", ref: \"%s\", force: %b \n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+
+        String script =
+                String.format(format, GitlabConsts.GITLAB_HOST, Gitlab.host,
+                        GitlabConsts.GITLAB_TOKEN, Gitlab.token,
+                        GitlabConsts.GITLAB_NAMESPACE, project.getNamespace().getPath(),
+                        GitlabConsts.GITLAB_PROJECT, project.getPath(),
+                        branch, Gitlab.DEFAULT_BRANCH, true);
+        log.info("script = " + script);
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, project.getName());
+        job.setDefinition(new CpsFlowDefinition(script, true));
+        jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
+        jenkinsRule.waitUntilNoActivity();
+
+        List<Branch> branches = Gitlab.api.getRepositoryApi().getBranches(project);
+        Assert.assertEquals(2, branches.size());
+
+        boolean branchFound = false;
+        for (Branch b : branches) {
+            if (StringUtils.equals(b.getName(), branch)) {
+                branchFound = true;
+                break;
+            }
+        }
+        Assert.assertTrue(branchFound);
     }
 
     @Test

@@ -1,7 +1,9 @@
 package com.zkztch.jenkins.plugins.pipeline.when;
 
+import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
 import com.zkztch.jenkins.test.Gitlab;
 import com.zkztch.jenkins.test.Jenkins;
+import hudson.plugins.git.GitSCM;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Project;
@@ -46,11 +48,11 @@ public class GitlabCommitWithTagConditionalTest {
         String format = "pipeline {\n" +
                 "    agent any\n" +
                 "    environment {\n" +
-                "        GITLAB_HOST = \"%s\"\n" +
-                "        GITLAB_TOKEN = \"%s\"\n" +
-                "        GITLAB_NAMESPACE = \"%s\"\n" +
-                "        GITLAB_PROJECT = \"%s\"\n" +
-                "        GIT_COMMIT = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
                 "    }\n" +
                 "    stages {\n" +
                 "        stage(\"start\") {\n" +
@@ -58,13 +60,17 @@ public class GitlabCommitWithTagConditionalTest {
                 "                gitlabCommitWithTag \"%s\"\n" +
                 "            }\n" +
                 "            steps {\n" +
-                "                echo \"${GIT_COMMIT} matched\"\n" +
+                "                echo \"${%s} matched\"\n" +
                 "            }\n" +
                 "        }\n" +
                 "    }\n" +
                 "}";
         String script =
-                String.format(format, Gitlab.host, Gitlab.token, project.getNamespace().getPath(), project.getPath(), commit, tag);
+                String.format(format, GitlabConsts.GITLAB_HOST, Gitlab.host,
+                        GitlabConsts.GITLAB_TOKEN, Gitlab.token,
+                        GitlabConsts.GITLAB_NAMESPACE, project.getNamespace().getPath(),
+                        GitlabConsts.GITLAB_PROJECT, project.getPath(),
+                        GitSCM.GIT_COMMIT, commit, tag, GitSCM.GIT_COMMIT);
 
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, project.getName());
@@ -81,7 +87,7 @@ public class GitlabCommitWithTagConditionalTest {
         String format = "pipeline {\n" +
                 "    agent any\n" +
                 "    environment {\n" +
-                "        GIT_COMMIT = \"%s\"\n" +
+                "        %s = \"%s\"\n" +
                 "    }\n" +
                 "    stages {\n" +
                 "        stage(\"start\") {\n" +
@@ -95,7 +101,8 @@ public class GitlabCommitWithTagConditionalTest {
                 "    }\n" +
                 "}\n";
         String script =
-                String.format(format, commit, Gitlab.host, Gitlab.token, project.getNamespace().getPath(), project.getPath(), tag);
+                String.format(format, GitSCM.GIT_COMMIT, commit, Gitlab.host, Gitlab.token, project.getNamespace().getPath(),
+                        project.getPath(), tag);
 
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, project.getName());

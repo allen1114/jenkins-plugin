@@ -1,6 +1,8 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.google.common.collect.ImmutableSet;
+import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.TaskListener;
 import lombok.ToString;
@@ -27,10 +29,7 @@ public class GitlabProtectBranchStep extends GitlabBaseStep {
     private String level;
 
     @DataBoundConstructor
-    public GitlabProtectBranchStep(String host, String token, String namespace, String project, String branch, String level) {
-        super(host, token);
-        this.namespace = namespace;
-        this.project = project;
+    public GitlabProtectBranchStep(String branch, String level) {
         this.branch = branch;
         this.level = level;
     }
@@ -57,50 +56,27 @@ public class GitlabProtectBranchStep extends GitlabBaseStep {
         return branch;
     }
 
-    @DataBoundSetter
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
     public String getLevel() {
         return level;
     }
 
-    @DataBoundSetter
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
     @Override
-    public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi) throws Exception {
+    public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
 
         AccessLevel accessLevel = AccessLevel.valueOf(level);
-        Project pro = gitLabApi.getProjectApi().getProject(namespace, project);
         try {
-            gitLabApi.getProtectedBranchesApi().unprotectBranch(pro, branch);
+            gitLabApi.getProtectedBranchesApi().unprotectBranch(project, branch);
         } catch (Exception ignored) {
 
         }
-        gitLabApi.getProtectedBranchesApi().protectBranch(pro, branch, accessLevel, accessLevel);
+        gitLabApi.getProtectedBranchesApi().protectBranch(project, branch, accessLevel, accessLevel);
     }
 
     @Extension
-    public static class DescriptorImpl extends StepDescriptor {
-
-        @Override
-        public Set<? extends Class<?>> getRequiredContext() {
-            return ImmutableSet.of(TaskListener.class);
-        }
-
+    public static class Descriptor extends GitlabStepDescriptor {
         @Override
         public String getFunctionName() {
             return STEP;
-        }
-
-        @Nonnull
-        @Override
-        public String getDisplayName() {
-            return getFunctionName();
         }
     }
 }
