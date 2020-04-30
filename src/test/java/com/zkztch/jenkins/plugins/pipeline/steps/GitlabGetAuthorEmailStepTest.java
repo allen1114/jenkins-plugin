@@ -3,19 +3,17 @@ package com.zkztch.jenkins.plugins.pipeline.steps;
 import com.zkztch.jenkins.test.Gitlab;
 import com.zkztch.jenkins.test.Jenkins;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.models.Branch;
 import org.gitlab4j.api.models.Commit;
 import org.gitlab4j.api.models.Project;
-import org.gitlab4j.api.models.User;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.JenkinsRule;
-
-import java.util.List;
 
 @Slf4j
 public class GitlabGetAuthorEmailStepTest {
@@ -40,10 +38,6 @@ public class GitlabGetAuthorEmailStepTest {
 
     @Test
     public void test() throws Exception {
-//        System.out.println(project.getOwner().getName());
-//        System.out.println(project.getOwner().getEmail());
-//        User user = Gitlab.api.getUserApi().getUser(project.getOwner().getName());
-//        System.out.println(user.getEmail());
         Commit commit = Gitlab.api.getRepositoryApi().getBranch(project, Gitlab.DEFAULT_BRANCH).getCommit();
 
         String script = String.format(
