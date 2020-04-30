@@ -61,7 +61,7 @@ public class GitlabProtectBranchStep extends GitlabBaseStep {
     }
 
     @Override
-    public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
+    public Object doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
 
         AccessLevel accessLevel = AccessLevel.valueOf(level);
         try {
@@ -70,6 +70,8 @@ public class GitlabProtectBranchStep extends GitlabBaseStep {
 
         }
         gitLabApi.getProtectedBranchesApi().protectBranch(project, branch, accessLevel, accessLevel);
+
+        return null;
     }
 
     @Extension

@@ -20,12 +20,13 @@ public class GitlabUnprotectBranchStep extends GitlabBaseStep {
     }
 
     @Override
-    public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
+    public Object doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
         try {
             gitLabApi.getProtectedBranchesApi().unprotectBranch(project, branch);
         } catch (Exception ignored) {
 
         }
+        return null;
     }
 
     @Extension

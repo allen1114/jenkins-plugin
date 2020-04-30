@@ -26,7 +26,7 @@ public class GitlabCreateTagStep extends GitlabBaseStep {
     }
 
     @Override
-    public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
+    public Object doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
         List<Tag> tags = gitLabApi.getTagsApi().getTags(project);
         for (Tag t : tags) {
             if (StringUtils.equals(t.getName(), tag)) {
@@ -39,6 +39,8 @@ public class GitlabCreateTagStep extends GitlabBaseStep {
             }
         }
         gitLabApi.getTagsApi().createTag(project, tag, ref);
+
+        return null;
     }
 
     @Extension

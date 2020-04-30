@@ -65,7 +65,7 @@ public abstract class GitlabBaseStep extends Step {
         return new Execution<>(context, this);
     }
 
-    public abstract void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception;
+    public abstract Object doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception;
 
     public static class Execution<T extends GitlabBaseStep> extends StepExecution {
 
@@ -97,8 +97,8 @@ public abstract class GitlabBaseStep extends Step {
                 gitLabApi.setIgnoreCertificateErrors(true);
 
                 try {
-                    step.doStart(getContext(), listener.getLogger(), gitLabApi, gitLabApi.getProjectApi().getProject(namespace, project));
-                    getContext().onSuccess(null);
+                    getContext().onSuccess(step.doStart(getContext(), listener.getLogger(), gitLabApi,
+                            gitLabApi.getProjectApi().getProject(namespace, project)));
                 } catch (Exception e) {
                     getContext().onFailure(e);
                 }

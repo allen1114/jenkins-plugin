@@ -22,7 +22,7 @@ public class GitlabDeleteBranchStep extends GitlabBaseStep {
     }
 
     @Override
-    public void doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
+    public Object doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception {
         List<Branch> branchList = gitLabApi.getRepositoryApi().getBranches(project);
         for (Branch b : branchList) {
             if (StringUtils.equals(b.getName(), branch)) {
@@ -35,6 +35,7 @@ public class GitlabDeleteBranchStep extends GitlabBaseStep {
                 break;
             }
         }
+        return null;
     }
 
     @Extension
