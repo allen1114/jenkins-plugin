@@ -2,6 +2,8 @@ package com.zkztch.jenkins.plugins.pipeline.when
 
 import com.zkztch.jenkins.plugins.pipeline.GitlabConsts
 import hudson.plugins.git.GitSCM
+import org.glassfish.jersey.inject.hk2.Hk2InjectionManagerFactory
+import org.glassfish.jersey.internal.inject.InjectionManagerFactory
 import org.jenkinsci.plugins.pipeline.modeldefinition.when.DeclarativeStageConditionalScript
 import org.jenkinsci.plugins.workflow.cps.CpsScript
 
