@@ -1,0 +1,60 @@
+package com.zkztch.jenkins.plugins.pipeline.steps;
+
+import com.zkztch.jenkins.test.Gitlab;
+import com.zkztch.jenkins.test.Jenkins;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.models.Branch;
+import org.gitlab4j.api.models.Commit;
+import org.gitlab4j.api.models.Project;
+import org.gitlab4j.api.models.User;
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.junit.*;
+import org.jvnet.hudson.test.BuildWatcher;
+import org.jvnet.hudson.test.JenkinsRule;
+
+import java.util.List;
+
+@Slf4j
+public class GitlabGetAuthorEmailStepTest {
+
+
+    @ClassRule public static final BuildWatcher buildWatcher = Jenkins.buildWatcher;
+    @ClassRule public static final JenkinsRule jenkinsRule = Jenkins.jenkinsRule;
+
+    private Project project;
+
+    @Before
+    public void setup() throws GitLabApiException {
+        log.info("setup");
+        project = Gitlab.createTmpProject();
+    }
+
+    @After
+    public void clean() throws GitLabApiException {
+        log.info("clean");
+        Gitlab.deleteProject(project);
+    }
+
+    @Test
+    public void test() throws Exception {
+//        System.out.println(project.getOwner().getName());
+//        System.out.println(project.getOwner().getEmail());
+//        User user = Gitlab.api.getUserApi().getUser(project.getOwner().getName());
+//        System.out.println(user.getEmail());
+        Commit commit = Gitlab.api.getRepositoryApi().getBranch(project, Gitlab.DEFAULT_BRANCH).getCommit();
+
+        String script = String.format(
+                "def e = gitlabGetAuthorEmail host: '%s', token: '%s', namespace: '%s', project: '%s', commit: '%s' \n" +
+                        "echo e",
+                Gitlab.host, Gitlab.token, project.getNamespace().getPath(), project.getPath(), commit.getId());
+        log.info("script = " + script);
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, project.getName());
+        job.setDefinition(new CpsFlowDefinition(script, true));
+        jenkinsRule.assertLogContains(commit.getAuthorEmail(), jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0)));
+        jenkinsRule.waitUntilNoActivity();
+    }
+
+}
