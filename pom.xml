@@ -155,29 +155,16 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>https://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
 
     <distributionManagement>
         <snapshotRepository>
-            <id>maven-snapshots</id>
-            <name>maven-snapshots</name>
+            <id>zkztch-snapshots</id>
+            <name>zkztch-snapshots</name>
             <url>http://192.168.1.130:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
-            <id>maven-releases</id>
-            <name>maven-releases</name>
+            <id>zkztch-releases</id>
+            <name>zkztch-releases</name>
             <url>http://192.168.1.130:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
