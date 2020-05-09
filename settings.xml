@@ -18,7 +18,7 @@
 		<mirror>
 			<id>zkztch-public</id>
 			<name>zkztch-public</name>
-			<url>http://nexus.sit.zkztch.com/repository/maven-public/</url>
+			<url>http://repo.sit.zkztch.com/repository/maven-public/</url>
 			<mirrorOf>central</mirrorOf>
 		</mirror>
 	</mirrors>

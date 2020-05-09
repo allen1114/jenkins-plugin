@@ -160,12 +160,12 @@
         <snapshotRepository>
             <id>zkztch-snapshots</id>
             <name>zkztch-snapshots</name>
-            <url>http://nexus.sit.zkztch.com/repository/maven-snapshots/</url>
+            <url>http://repo.sit.zkztch.com/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>zkztch-releases</id>
             <name>zkztch-releases</name>
-            <url>http://nexus.sit.zkztch.com/repository/maven-releases/</url>
+            <url>http://repo.sit.zkztch.com/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 
