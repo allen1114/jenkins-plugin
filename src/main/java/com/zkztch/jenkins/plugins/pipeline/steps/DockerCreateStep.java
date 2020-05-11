@@ -30,8 +30,9 @@ public class DockerCreateStep extends DockerBaseStep {
             throws Exception {
         ContainerConfig.Builder containerConfigBuiler = ContainerConfig.builder();
         if (params != null) {
-            for (String key : params.keySet()) {
-                Object val = params.get(key);
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                String key = entry.getKey();
+                Object val = entry.getValue();
                 if (val != null) {
                     Method method = MethodUtils.getMatchingAccessibleMethod(ContainerConfig.Builder.class, key, val.getClass());
                     if (method != null) {
