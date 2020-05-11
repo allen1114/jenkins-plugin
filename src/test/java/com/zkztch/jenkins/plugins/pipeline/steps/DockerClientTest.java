@@ -6,11 +6,9 @@ import org.junit.Test;
 
 public class DockerClientTest {
 
-    private static final String pullimage = TestPropertiesUtils.getProperty("docker.pull.test.image");
-
     @Test
     public void test() throws Exception {
-        Docker.client.pull(pullimage);
+        Docker.client.pull(Docker.DOCKER_TEST_BASEIMAGE);
     }
 
 }
