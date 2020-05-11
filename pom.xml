@@ -153,6 +153,14 @@
             <artifactId>workflow-durable-task-step</artifactId>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-client</artifactId>
+            <version>8.16.0</version>
+            <classifier>shaded</classifier>
+        </dependency>
     </dependencies>
 
 

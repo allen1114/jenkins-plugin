@@ -21,7 +21,6 @@ public class TestPropertiesUtils {
             basedir = basedir.substring(0, basedir.length() - 15);
         }
 
-        // Load the base test properties from "src/test/resources/test-gitlab4j.properties"
         File propertiesFile = new File(basedir, "src/test/resources/" + propertiesFileName);
         if (propertiesFile.exists()) {
             try (InputStreamReader input = new InputStreamReader(new FileInputStream(propertiesFile))) {

@@ -13,7 +13,6 @@ public class Gitlab {
     public static final String token;
     public static final GitLabApi api;
 
-
     static {
         host = TestPropertiesUtils.getProperty("gitlab.host");
         token = TestPropertiesUtils.getProperty("gitlab.token");

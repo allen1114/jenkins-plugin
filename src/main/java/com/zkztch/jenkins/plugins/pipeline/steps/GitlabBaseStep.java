@@ -80,10 +80,10 @@ public abstract class GitlabBaseStep extends Step {
         public boolean start() throws Exception {
             do {
                 EnvVars env = getContext().get(EnvVars.class);
-                String host = step.getHost() != null ? step.getHost() : env.get(GitlabConsts.GITLAB_HOST);
-                String token = step.getToken() != null ? step.getToken() : env.get(GitlabConsts.GITLAB_TOKEN);
-                String namespace = step.getNamespace() != null ? step.getNamespace() : env.get(GitlabConsts.GITLAB_NAMESPACE);
-                String project = step.getProject() != null ? step.getProject() : env.get(GitlabConsts.GITLAB_PROJECT);
+                String host = step.getHost() != null ? step.getHost() : env.expand(env.get(GitlabConsts.GITLAB_HOST));
+                String token = step.getToken() != null ? step.getToken() : env.expand(env.get(GitlabConsts.GITLAB_TOKEN));
+                String namespace = step.getNamespace() != null ? step.getNamespace() : env.expand(env.get(GitlabConsts.GITLAB_NAMESPACE));
+                String project = step.getProject() != null ? step.getProject() : env.expand(env.get(GitlabConsts.GITLAB_PROJECT));
 
                 TaskListener listener = getContext().get(TaskListener.class);
 
