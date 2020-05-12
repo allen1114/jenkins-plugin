@@ -90,12 +90,14 @@ public abstract class DockerBaseStep extends Step {
         }
 
         private DockerClient buildDockerClient() throws Exception {
-
+            TaskListener listener = getContext().get(TaskListener.class);
             EnvVars env = getContext().get(EnvVars.class);
             String dockerHost = step.getDockerHost() != null ? step.getDockerHost() : env.expand(env.get(DockerConsts.DOCKER_HOST));
             String dockerCertPath =
                     step.getDockerCertPath() != null ? step.getDockerCertPath() : env.expand(env.get(DockerConsts.DOCKER_CERT_PATH));
 
+            listener.getLogger().println("dockerHost:" + dockerHost);
+            listener.getLogger().println("dockerCertPath:" + dockerCertPath);
             DefaultDockerClient.Builder builder = DefaultDockerClient.fromEnv().readTimeoutMillis(0);
             if (StringUtils.isNoneBlank(dockerHost)) {
                 builder.uri(dockerHost);
@@ -104,10 +106,13 @@ public abstract class DockerBaseStep extends Step {
             if (StringUtils.isNotBlank(dockerCertPath)) {
                 FilePath workspace = getContext().get(FilePath.class);
                 FilePath certDir = workspace.child(dockerCertPath);
+                listener.getLogger().println("workspace.Remote:" + workspace.getRemote());
+                listener.getLogger().println("certDir.Remote:" + certDir.getRemote());
                 if (certDir.exists()) {
                     Optional<DockerCertificatesStore> certs =
-                            DockerCertificates.builder().dockerCertPath(Paths.get(dockerCertPath)).build();
+                            DockerCertificates.builder().dockerCertPath(Paths.get(certDir.toURI())).build();
                     if (certs.isPresent()) {
+                        listener.getLogger().println("certs found");
                         builder.dockerCertificates(certs.get());
                     }
                 }
