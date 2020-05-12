@@ -71,4 +71,41 @@ public class DockerCreateStepTest {
         jenkinsRule.assertLogContains(containerId, run);
 
     }
+
+    @Test
+    public void createWithEnv() throws Exception {
+        String config = Resources.toString(Resources.getResource("container_config.json"), Charsets.UTF_8).trim();
+        config = config.replaceAll("\\s+", " ");
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    environment {\n" +
+                "        DOCKER_HOST = \"%s\"\n" +
+                "        DOCKER_CERT_PATH = \"%s\"\n" +
+                "    }\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               dockerCreate name:'%s', config: '%s'\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, containerName, config);
+        log.info("script = " + script);
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, containerName);
+        job.setDefinition(new CpsFlowDefinition(script, true));
+        WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
+        jenkinsRule.waitUntilNoActivity();
+
+        List<Container> containers = Docker.client.listContainers(DockerClient.ListContainersParam.allContainers());
+        for (Container c : containers) {
+            for (String n : c.names()) {
+                if (n.contains(containerName)) {
+                    containerId = c.id();
+                    break;
+                }
+            }
+        }
+        Assert.assertNotNull(containerId);
+    }
 }

@@ -14,6 +14,7 @@ import com.spotify.docker.client.messages.RegistryConfigs;
 import com.spotify.docker.client.shaded.com.google.common.base.Optional;
 import com.zkztch.jenkins.plugins.pipeline.DockerConsts;
 import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.model.TaskListener;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -100,9 +101,16 @@ public abstract class DockerBaseStep extends Step {
                 builder.uri(dockerHost);
             }
 
-            Optional<DockerCertificatesStore> certs = DockerCertificates.builder().dockerCertPath(Paths.get(dockerCertPath)).build();
-            if (certs.isPresent()) {
-                builder.dockerCertificates(certs.get());
+            if (StringUtils.isNotBlank(dockerCertPath)) {
+                FilePath workspace = getContext().get(FilePath.class);
+                FilePath certDir = workspace.child(dockerCertPath);
+                if (certDir.exists()) {
+                    Optional<DockerCertificatesStore> certs =
+                            DockerCertificates.builder().dockerCertPath(Paths.get(dockerCertPath)).build();
+                    if (certs.isPresent()) {
+                        builder.dockerCertificates(certs.get());
+                    }
+                }
             }
 
             registryAuth(env, builder);
