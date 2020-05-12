@@ -44,7 +44,7 @@ public class DockerStateStepTest {
                         "def state = dockerState container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
                         "echo state\n" +
                         "\n}",
-                containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
+                containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
                 Docker.DOCKER_REGISTRY_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "getStateTest");

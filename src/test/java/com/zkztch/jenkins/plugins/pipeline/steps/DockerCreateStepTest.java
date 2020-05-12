@@ -51,7 +51,7 @@ public class DockerCreateStepTest {
                         "def containerId = dockerCreate name:'%s', config: '%s', dockerHost:'%s', dockerCertPath:'%s'\n" +
                         "echo containerId \n" +
                         "\n}",
-                containerName, config, Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH);
+                containerName, config, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, containerName);
         job.setDefinition(new CpsFlowDefinition(script, true));

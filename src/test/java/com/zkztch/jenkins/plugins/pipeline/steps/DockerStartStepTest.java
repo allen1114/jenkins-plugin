@@ -47,7 +47,7 @@ public class DockerStartStepTest {
                 "script {\n" +
                         "dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
                         "\n}",
-                containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
+                containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
                 Docker.DOCKER_REGISTRY_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
@@ -71,7 +71,7 @@ public class DockerStartStepTest {
                 "script {\n" +
                         "dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
                         "\n}",
-                name, Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
+                name, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
                 Docker.DOCKER_REGISTRY_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
@@ -95,7 +95,7 @@ public class DockerStartStepTest {
                 "script {\n" +
                         "dockerStart container:'%s',failWhenNotFound:true, dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
                         "\n}",
-                UUID.randomUUID().toString(), Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH, Docker.DOCKER_REGISTRY_URL,
+                UUID.randomUUID().toString(), Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL,
                 Docker.DOCKER_REGISTRY_USERNAME, Docker.DOCKER_REGISTRY_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");

@@ -7,7 +7,6 @@ import com.spotify.docker.client.DockerCertificatesStore;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.auth.FixedRegistryAuthSupplier;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
-import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.RegistryAuth;
 import com.spotify.docker.client.messages.RegistryConfigs;
 import com.spotify.docker.client.shaded.com.google.common.base.Optional;
@@ -18,7 +17,7 @@ import java.nio.file.Paths;
 
 public class Docker {
     private static final String dockerCertsDir = "docker_certs";
-    public static final String DOCKER_CERTS_PATH;
+    public static final String DOCKER_CERT_PATH;
     public static final String DOCKER_HOST = TestPropertiesUtils.getProperty("docker.host");
     public static final String DOCKER_REGISTRY_URL = TestPropertiesUtils.getProperty("docker.registory.url");
     public static final String DOCKER_REGISTRY_USERNAME = TestPropertiesUtils.getProperty("docker.registory.username");
@@ -38,15 +37,15 @@ public class Docker {
 
         File dir = new File(basedir, "src/test/resources/" + dockerCertsDir);
         if (dir.exists()) {
-            DOCKER_CERTS_PATH = dir.getAbsolutePath().replaceAll("\\\\", "/");
+            DOCKER_CERT_PATH = dir.getAbsolutePath().replaceAll("\\\\", "/");
 
         } else {
             dir = new File((String) System.getProperties().get("user.home"), dockerCertsDir);
             if (dir.exists()) {
-                DOCKER_CERTS_PATH = dir.getAbsolutePath().replaceAll("\\\\", "/");
+                DOCKER_CERT_PATH = dir.getAbsolutePath().replaceAll("\\\\", "/");
                 ;
             } else {
-                DOCKER_CERTS_PATH = null;
+                DOCKER_CERT_PATH = null;
             }
         }
 
@@ -62,7 +61,7 @@ public class Docker {
 
         Optional<DockerCertificatesStore> certs = null;
         try {
-            certs = DockerCertificates.builder().dockerCertPath(Paths.get(DOCKER_CERTS_PATH)).build();
+            certs = DockerCertificates.builder().dockerCertPath(Paths.get(DOCKER_CERT_PATH)).build();
         } catch (DockerCertificateException e) {
             throw new RuntimeException(e);
         }
