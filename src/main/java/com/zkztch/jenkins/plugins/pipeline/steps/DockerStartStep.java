@@ -1,25 +1,20 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.messages.Container;
 import hudson.Extension;
-import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.io.PrintStream;
-
-public class DockerStartStep extends DockerBaseStep {
+public class DockerStartStep extends DockerContainerStep {
     public static final String STEP = "dockerStart";
-
-    private String id;
-
     @DataBoundConstructor
-    public DockerStartStep(String id) {
-        this.id = id;
+    public DockerStartStep() {
     }
 
     @Override
-    protected Object doStart(StepContext context, PrintStream logger, DockerClient dockerClient) throws Exception {
-        dockerClient.startContainer(id);
+    protected Object doStep(DockerClient dockerClient, Container container) throws DockerException, InterruptedException {
+        dockerClient.startContainer(container.id());
         return null;
     }
 

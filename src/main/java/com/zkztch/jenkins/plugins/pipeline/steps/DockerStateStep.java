@@ -5,29 +5,17 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.Container;
 import hudson.Extension;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 
-public class DockerStopStep extends DockerContainerStep {
+public class DockerStateStep extends DockerContainerStep {
 
-    public static final String STEP = "dockerStop";
-
+    public static final String STEP = "dockerState";
     @DataBoundConstructor
-    public DockerStopStep() {
-
+    public DockerStateStep() {
     }
-
-    private int secondsToWait = 60;
-
-    @DataBoundSetter
-    public void setSecondsToWait(int secondsToWait) {
-        this.secondsToWait = secondsToWait;
-    }
-
 
     @Override
     protected Object doStep(DockerClient dockerClient, Container container) throws DockerException, InterruptedException {
-        dockerClient.stopContainer(container.id(), secondsToWait);
-        return null;
+        return container.state();
     }
 
 

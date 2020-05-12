@@ -17,7 +17,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 import java.util.List;
 
 @Slf4j
-public class DockerRemoveStepTest {
+public class DockerStateStepTest {
 
     @ClassRule public static final BuildWatcher buildWatcher = Jenkins.buildWatcher;
     @ClassRule public static final JenkinsRule jenkinsRule = Jenkins.jenkinsRule;
@@ -32,24 +32,22 @@ public class DockerRemoveStepTest {
     }
 
     @After
-    public void clean() throws DockerException, InterruptedException {
+    public void clean() throws Exception {
         log.info("clean");
-        if (containerId != null) {
-            Docker.client.removeContainer(containerId);
-        }
+        Docker.client.removeContainer(containerId);
     }
 
     @Test
-    public void removeTest() throws Exception {
+    public void getStateTest() throws Exception {
         String script = String.format(
                 "script {\n" +
-                        "dockerRemove container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                        "def state = dockerState container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                        "echo state\n" +
                         "\n}",
                 containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
                 Docker.DOCKER_REGISTRY_PASSWORD);
-
         log.info("script = " + script);
-        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "removeTest");
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "getStateTest");
         job.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
         jenkinsRule.waitUntilNoActivity();
@@ -57,10 +55,10 @@ public class DockerRemoveStepTest {
         List<Container> containers = Docker.client.listContainers(DockerClient.ListContainersParam.allContainers());
         for (Container c : containers) {
             if (c.id().equals(containerId)) {
-                Assert.fail("Container shoud be removed");
+                jenkinsRule.assertLogContains(c.state(), run);
+                break;
             }
         }
-        containerId = null;
     }
 
 }

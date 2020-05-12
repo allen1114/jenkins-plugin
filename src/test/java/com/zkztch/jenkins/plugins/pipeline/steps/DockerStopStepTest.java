@@ -43,7 +43,7 @@ public class DockerStopStepTest {
     public void stopTest() throws Exception {
         String script = String.format(
                 "script {\n" +
-                        "dockerStop id:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                        "dockerStop container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
                         "\n}",
                 containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERTS_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
                 Docker.DOCKER_REGISTRY_PASSWORD);
