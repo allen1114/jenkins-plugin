@@ -1,0 +1,12 @@
+{
+  "Image": "nginx:1.17.4",
+  "HostConfig": {
+    "PortBindings": {
+      "80/tcp": [
+        {
+          "HostPort": "8003"
+        }
+      ]
+    }
+  }
+}
