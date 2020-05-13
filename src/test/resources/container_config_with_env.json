@@ -1,0 +1,15 @@
+{
+  "Image": "${DOCKER_IMAGE}",
+  "ExposedPorts": {
+    "8080/tcp": { }
+  },
+  "HostConfig": {
+    "PortBindings": {
+      "80/tcp": [
+        {
+          "HostPort": "8003"
+        }
+      ]
+    }
+  }
+}

@@ -110,7 +110,7 @@ public class DockerCreateStepTest {
     }
 
     @Test
-    public void createWithEnvByConfigFile() throws Exception {
+    public void createByConfigFile() throws Exception {
         String config = Resources.getResource("container_config.json").getPath();
         config = config.replaceAll("\\s+", " ");
         String format = "pipeline {\n" +
@@ -128,6 +128,45 @@ public class DockerCreateStepTest {
                 "    }\n" +
                 "}";
         String script = String.format(format, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, containerName, config);
+        log.info("script = " + script);
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, containerName);
+        job.setDefinition(new CpsFlowDefinition(script, true));
+        WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
+        jenkinsRule.waitUntilNoActivity();
+
+        List<Container> containers = Docker.client.listContainers(DockerClient.ListContainersParam.allContainers());
+        for (Container c : containers) {
+            for (String n : c.names()) {
+                if (n.contains(containerName)) {
+                    containerId = c.id();
+                    break;
+                }
+            }
+        }
+        Assert.assertNotNull(containerId);
+    }
+
+    @Test
+    public void createByConfigFileWithEnv() throws Exception {
+        String config = Resources.getResource("container_config_with_env.json").getPath();
+        config = config.replaceAll("\\s+", " ");
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    environment {\n" +
+                "        DOCKER_HOST = \"%s\"\n" +
+                "        DOCKER_CERT_PATH = \"%s\"\n" +
+                "        DOCKER_IMAGE = \"%s\"\n" +
+                "    }\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               dockerCreate name:'%s', config: '%s'\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script =
+                String.format(format, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_TEST_BASEIMAGE, containerName, config);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, containerName);
         job.setDefinition(new CpsFlowDefinition(script, true));

@@ -6,6 +6,7 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.shaded.com.fasterxml.jackson.core.JsonParseException;
 import com.spotify.docker.client.shaded.com.fasterxml.jackson.databind.JsonMappingException;
 import com.spotify.docker.client.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -49,7 +50,7 @@ public class DockerCreateStep extends DockerBaseStep {
             FilePath workspace = context.get(FilePath.class);
             FilePath configFile = workspace.child(config);
             if (configFile.exists()) {
-                String configJson = configFile.readToString().trim();
+                String configJson = context.get(EnvVars.class).expand(configFile.readToString().trim());
                 containerConfig = objectMapper.readValue(configJson, ContainerConfig.class);
             }
         }
