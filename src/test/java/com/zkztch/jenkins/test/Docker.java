@@ -78,7 +78,6 @@ public class Docker {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private static void registryAuth(DefaultDockerClient.Builder builder) {

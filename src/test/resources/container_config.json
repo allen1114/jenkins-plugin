@@ -1,5 +1,8 @@
 {
   "Image": "nginx:1.17.4",
+  "ExposedPorts": {
+    "8080/tcp": { }
+  },
   "HostConfig": {
     "PortBindings": {
       "80/tcp": [

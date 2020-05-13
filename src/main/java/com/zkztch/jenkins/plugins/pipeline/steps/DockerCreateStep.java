@@ -3,9 +3,11 @@ package com.zkztch.jenkins.plugins.pipeline.steps;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.ObjectMapperProvider;
 import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.ContainerCreation;
+import com.spotify.docker.client.shaded.com.fasterxml.jackson.core.JsonParseException;
+import com.spotify.docker.client.shaded.com.fasterxml.jackson.databind.JsonMappingException;
 import com.spotify.docker.client.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import hudson.Extension;
+import hudson.FilePath;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -16,8 +18,10 @@ public class DockerCreateStep extends DockerBaseStep {
 
     public static final String STEP = "dockerCreate";
 
+    private static final ObjectMapper objectMapper = ObjectMapperProvider.objectMapper();
+
     private String name;
-    private String config = "{}";
+    private String config;
 
     @DataBoundConstructor
     public DockerCreateStep() {
@@ -36,25 +40,20 @@ public class DockerCreateStep extends DockerBaseStep {
     @Override
     protected Object doStart(StepContext context, PrintStream logger, DockerClient dockerClient)
             throws Exception {
-        ObjectMapper objectMapper = ObjectMapperProvider.objectMapper();
-        ContainerConfig containerConfig = objectMapper.readValue(config, ContainerConfig.class);
-//
-//        ContainerConfig.Builder containerConfigBuiler = ContainerConfig.builder();
-//        if (params != null) {
-//            for (Map.Entry<String, Object> entry : params.entrySet()) {
-//                String key = entry.getKey();
-//                Object val = entry.getValue();
-//                if (val != null) {
-//                    Method method = MethodUtils.getMatchingAccessibleMethod(ContainerConfig.Builder.class, key, val.getClass());
-//                    if (method != null) {
-//                        method.invoke(containerConfigBuiler, val);
-//                    }
-//                }
-//            }
-//        }
-//        ContainerCreation creation = dockerClient.createContainer(containerConfigBuiler.build(), name);
-        ContainerCreation creation = dockerClient.createContainer(containerConfig, name);
-        return creation.id();
+
+        ContainerConfig containerConfig = null;
+        try {
+            containerConfig = objectMapper.readValue(config, ContainerConfig.class);
+        } catch (JsonParseException | JsonMappingException e) {
+            logger.println("config seem not a correct json string! try resolve as a file path.");
+            FilePath workspace = context.get(FilePath.class);
+            FilePath configFile = workspace.child(config);
+            if (configFile.exists()) {
+                String configJson = configFile.readToString().trim();
+                containerConfig = objectMapper.readValue(configJson, ContainerConfig.class);
+            }
+        }
+        return dockerClient.createContainer(containerConfig, name).id();
     }
 
     @Extension
