@@ -50,7 +50,6 @@ public abstract class AbstractDockerRepoStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        this.loadEnv(context.get(EnvVars.class));
         return new AbstractDockerRepoStep.Execution<>(context, this);
     }
 
@@ -64,6 +63,7 @@ public abstract class AbstractDockerRepoStep extends Step {
 
         @Override
         public boolean start() throws Exception {
+            step.loadEnv(getContext().get(EnvVars.class));
             DockerRegistryClient dockerRegistryClient =
                     DefaultDockerRegistryClient.builder().uri(step.getUrl()).username(step.getUsername()).password(step.getPassword())
                             .build();

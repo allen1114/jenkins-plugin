@@ -70,7 +70,6 @@ public abstract class GitlabBaseStep extends Step {
 
     @Override
     public final StepExecution start(StepContext context) throws Exception {
-        this.loadEnv(context.get(EnvVars.class));
         return new Execution<>(context, this);
     }
 
@@ -87,6 +86,8 @@ public abstract class GitlabBaseStep extends Step {
 
         @Override
         public boolean start() throws Exception {
+            step.loadEnv(getContext().get(EnvVars.class));
+
             GitLabApi gitLabApi = new GitLabApi(step.getHost(), step.getToken());
             gitLabApi.setIgnoreCertificateErrors(true);
 
