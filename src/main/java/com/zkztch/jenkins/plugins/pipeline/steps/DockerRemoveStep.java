@@ -6,7 +6,7 @@ import com.spotify.docker.client.messages.Container;
 import hudson.Extension;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class DockerRemoveStep extends DockerContainerStep {
+public class DockerRemoveStep extends AbstractDockerContainerStep {
     public static final String STEP = "dockerRemove";
     @DataBoundConstructor
     public DockerRemoveStep() {

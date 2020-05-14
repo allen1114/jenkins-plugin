@@ -43,12 +43,20 @@ public class DockerPushStepTest {
     @Test
     public void pushTest() throws Exception {
 
-        String script = String.format(
-                "script {\n" +
-                        "dockerPush image:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                        "\n}",
-                image, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
-                Docker.DOCKER_REGISTRY_PASSWORD);
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   dockerPush image:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, image, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
+                Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
 
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "pushTest");

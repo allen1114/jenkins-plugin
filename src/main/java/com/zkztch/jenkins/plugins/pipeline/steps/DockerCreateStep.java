@@ -15,7 +15,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import java.io.PrintStream;
 
-public class DockerCreateStep extends DockerBaseStep {
+public class DockerCreateStep extends AbstractDockerStep {
 
     public static final String STEP = "dockerCreate";
 

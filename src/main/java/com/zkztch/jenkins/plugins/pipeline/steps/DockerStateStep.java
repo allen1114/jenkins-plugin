@@ -6,7 +6,7 @@ import com.spotify.docker.client.messages.Container;
 import hudson.Extension;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class DockerStateStep extends DockerContainerStep {
+public class DockerStateStep extends AbstractDockerContainerStep {
 
     public static final String STEP = "dockerState";
     @DataBoundConstructor

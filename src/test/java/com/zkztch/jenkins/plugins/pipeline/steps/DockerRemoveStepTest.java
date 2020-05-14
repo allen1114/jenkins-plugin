@@ -41,12 +41,22 @@ public class DockerRemoveStepTest {
 
     @Test
     public void removeTest() throws Exception {
-        String script = String.format(
-                "script {\n" +
-                        "dockerRemove container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                        "\n}",
-                containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
-                Docker.DOCKER_REGISTRY_PASSWORD);
+
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   dockerRemove container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
+                Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
+
 
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "removeTest");

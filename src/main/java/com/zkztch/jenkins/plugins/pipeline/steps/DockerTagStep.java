@@ -7,7 +7,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.PrintStream;
 
-public class DockerTagStep extends DockerBaseStep {
+public class DockerTagStep extends AbstractDockerStep {
 
     public static final String STEP = "dockerTag";
 

@@ -7,7 +7,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.PrintStream;
 
-public class DockerPullStep extends DockerBaseStep {
+public class DockerPullStep extends AbstractDockerStep {
     public static final String STEP = "dockerPull";
 
     private String image;

@@ -10,7 +10,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import java.io.PrintStream;
 import java.util.List;
 
-public abstract class DockerContainerStep extends DockerBaseStep {
+public abstract class AbstractDockerContainerStep extends AbstractDockerStep {
 
     private String container;
     private boolean failWhenNotFound = false;

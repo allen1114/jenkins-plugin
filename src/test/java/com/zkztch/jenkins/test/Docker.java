@@ -19,9 +19,9 @@ public class Docker {
     private static final String dockerCertsDir = "docker_certs";
     public static final String DOCKER_CERT_PATH;
     public static final String DOCKER_HOST = TestPropertiesUtils.getProperty("docker.host");
-    public static final String DOCKER_REGISTRY_URL = TestPropertiesUtils.getProperty("docker.registory.url");
-    public static final String DOCKER_REGISTRY_USERNAME = TestPropertiesUtils.getProperty("docker.registory.username");
-    public static final String DOCKER_REGISTRY_PASSWORD = TestPropertiesUtils.getProperty("docker.registory.password");
+    public static final String DOCKER_REPO_HOST = TestPropertiesUtils.getProperty("docker.registory.url");
+    public static final String DOCKER_REPO_USERNAME = TestPropertiesUtils.getProperty("docker.registory.username");
+    public static final String DOCKER_REPO_PASSWORD = TestPropertiesUtils.getProperty("docker.registory.password");
 
     public static final String DOCKER_TEST_BASEIMAGE = TestPropertiesUtils.getProperty("dockat.test.base.image");
 

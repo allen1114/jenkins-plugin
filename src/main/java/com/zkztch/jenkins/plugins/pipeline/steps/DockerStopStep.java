@@ -7,7 +7,7 @@ import hudson.Extension;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class DockerStopStep extends DockerContainerStep {
+public class DockerStopStep extends AbstractDockerContainerStep {
 
     public static final String STEP = "dockerStop";
 

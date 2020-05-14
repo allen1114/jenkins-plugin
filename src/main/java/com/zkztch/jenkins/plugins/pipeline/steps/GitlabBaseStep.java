@@ -1,6 +1,7 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.google.common.collect.ImmutableSet;
+import com.zkztch.jenkins.plugins.pipeline.DockerConsts;
 import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
@@ -60,8 +61,16 @@ public abstract class GitlabBaseStep extends Step {
         this.project = project;
     }
 
+    public void loadEnv(EnvVars env) {
+        host = StringUtils.isNotBlank(host) ? host : env.expand(env.get(GitlabConsts.GITLAB_URL));
+        token = StringUtils.isNotBlank(token) ? token : env.expand(env.get(GitlabConsts.GITLAB_TOKEN));
+        namespace = StringUtils.isNotBlank(namespace) ? namespace : env.expand(env.get(GitlabConsts.GITLAB_NAMESPACE));
+        project = StringUtils.isNotBlank(project) ? project : env.expand(env.get(GitlabConsts.GITLAB_PROJECT));
+    }
+
     @Override
     public final StepExecution start(StepContext context) throws Exception {
+        this.loadEnv(context.get(EnvVars.class));
         return new Execution<>(context, this);
     }
 
@@ -78,31 +87,16 @@ public abstract class GitlabBaseStep extends Step {
 
         @Override
         public boolean start() throws Exception {
-            do {
-                EnvVars env = getContext().get(EnvVars.class);
-                String host = step.getHost() != null ? step.getHost() : env.expand(env.get(GitlabConsts.GITLAB_HOST));
-                String token = step.getToken() != null ? step.getToken() : env.expand(env.get(GitlabConsts.GITLAB_TOKEN));
-                String namespace = step.getNamespace() != null ? step.getNamespace() : env.expand(env.get(GitlabConsts.GITLAB_NAMESPACE));
-                String project = step.getProject() != null ? step.getProject() : env.expand(env.get(GitlabConsts.GITLAB_PROJECT));
 
-                TaskListener listener = getContext().get(TaskListener.class);
+            GitLabApi gitLabApi = new GitLabApi(step.getHost(), step.getToken());
+            gitLabApi.setIgnoreCertificateErrors(true);
 
-                if (listener == null || StringUtils.isBlank(host) || StringUtils.isBlank(token) || StringUtils.isBlank(namespace) ||
-                        StringUtils.isBlank(project)) {
-                    getContext().onFailure(new IllegalStateException("inappropriate context"));
-                    break;
-                }
-
-                GitLabApi gitLabApi = new GitLabApi(host, token);
-                gitLabApi.setIgnoreCertificateErrors(true);
-
-                try {
-                    getContext().onSuccess(step.doStart(getContext(), listener.getLogger(), gitLabApi,
-                            gitLabApi.getProjectApi().getProject(namespace, project)));
-                } catch (Exception e) {
-                    getContext().onFailure(e);
-                }
-            } while (false);
+            try {
+                getContext().onSuccess(step.doStart(getContext(), getContext().get(TaskListener.class).getLogger(), gitLabApi,
+                        gitLabApi.getProjectApi().getProject(step.getNamespace(), step.getProject())));
+            } catch (Exception e) {
+                getContext().onFailure(e);
+            }
             return true;
         }
     }

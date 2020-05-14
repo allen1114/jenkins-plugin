@@ -16,6 +16,6 @@ class GitlabCommitWithTagConditionalScript extends DeclarativeStageConditionalSc
     @Override
     boolean evaluate() {
         Object env = script.getProperty("env");
-        return describable.match(env.getProperty(GitlabConsts.GITLAB_HOST), env.getProperty(GitlabConsts.GITLAB_TOKEN), env.getProperty(GitlabConsts.GITLAB_NAMESPACE), env.getProperty(GitlabConsts.GITLAB_PROJECT), env.getProperty(GitSCM.GIT_COMMIT));
+        return describable.match(env.getProperty(GitlabConsts.GITLAB_URL), env.getProperty(GitlabConsts.GITLAB_TOKEN), env.getProperty(GitlabConsts.GITLAB_NAMESPACE), env.getProperty(GitlabConsts.GITLAB_PROJECT), env.getProperty(GitSCM.GIT_COMMIT));
     }
 }

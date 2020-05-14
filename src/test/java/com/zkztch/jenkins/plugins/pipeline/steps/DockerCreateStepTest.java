@@ -46,12 +46,21 @@ public class DockerCreateStepTest {
     public void createContainerTest() throws Exception {
         String config = Resources.toString(Resources.getResource("container_config.json"), Charsets.UTF_8).trim();
         config = config.replaceAll("\\s+", " ");
-        String script = String.format(
-                "script {\n" +
-                        "def containerId = dockerCreate name:'%s', config: '%s', dockerHost:'%s', dockerCertPath:'%s'\n" +
-                        "echo containerId \n" +
-                        "\n}",
-                containerName, config, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH);
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   def containerId = dockerCreate name:'%s', config: '%s', dockerHost:'%s', dockerCertPath:'%s'\n" +
+                "                   echo containerId \n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, containerName, config, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH);
+
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, containerName);
         job.setDefinition(new CpsFlowDefinition(script, true));

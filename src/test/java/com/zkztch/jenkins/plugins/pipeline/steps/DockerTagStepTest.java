@@ -41,13 +41,20 @@ public class DockerTagStepTest {
 
     @Test
     public void tagTest() throws Exception {
-        String script = String.format(
-                "script {\n" +
-                        "dockerTag image:'%s', tag: '%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                        "\n}",
-                Docker.DOCKER_TEST_BASEIMAGE, tag, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL,
-                Docker.DOCKER_REGISTRY_USERNAME, Docker.DOCKER_REGISTRY_PASSWORD);
-
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   dockerTag image:'%s', tag: '%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, Docker.DOCKER_TEST_BASEIMAGE, tag, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
+                Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "tagTest");
         job.setDefinition(new CpsFlowDefinition(script, true));

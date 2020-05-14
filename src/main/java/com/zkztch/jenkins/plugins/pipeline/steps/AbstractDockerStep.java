@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 @Getter
-public abstract class DockerBaseStep extends Step {
+public abstract class AbstractDockerStep extends Step {
     private String dockerHost;
     private String dockerCertPath;
     private String registryUrl;
@@ -64,12 +64,23 @@ public abstract class DockerBaseStep extends Step {
         this.registryPassword = registryPassword;
     }
 
-    @Override
-    public final StepExecution start(StepContext context) throws Exception {
-        return new DockerBaseStep.Execution<>(context, this);
+    public void loadEnv(EnvVars env) {
+        dockerHost = StringUtils.isNotBlank(dockerHost) ? dockerHost : env.expand(env.get(DockerConsts.DOCKER_HOST));
+        dockerCertPath = StringUtils.isNotBlank(dockerCertPath) ? dockerCertPath : env.expand(env.get(DockerConsts.DOCKER_CERT_PATH));
+        registryUrl = StringUtils.isNotBlank(registryUrl) ? registryUrl : env.expand(env.get(DockerConsts.DOCKER_REPO_HOST));
+        registryUsername =
+                StringUtils.isNotBlank(registryUsername) ? registryUsername : env.expand(env.get(DockerConsts.DOCKER_REPO_USERNAME));
+        registryPassword =
+                StringUtils.isNotBlank(registryPassword) ? registryPassword : env.expand(env.get(DockerConsts.DOCKER_REPO_PASSWORD));
     }
 
-    public static class Execution<T extends DockerBaseStep> extends StepExecution {
+    @Override
+    public final StepExecution start(StepContext context) throws Exception {
+        this.loadEnv(context.get(EnvVars.class));
+        return new AbstractDockerStep.Execution<>(context, this);
+    }
+
+    public static class Execution<T extends AbstractDockerStep> extends StepExecution {
         private T step;
 
         public Execution(@Nonnull StepContext context, T step) {
@@ -80,9 +91,8 @@ public abstract class DockerBaseStep extends Step {
         @Override
         public boolean start() throws Exception {
             DockerClient dockerClient = buildDockerClient();
-            TaskListener listener = getContext().get(TaskListener.class);
             try {
-                getContext().onSuccess(step.doStart(getContext(), listener.getLogger(), dockerClient));
+                getContext().onSuccess(step.doStart(getContext(), getContext().get(TaskListener.class).getLogger(), dockerClient));
             } catch (Exception e) {
                 getContext().onFailure(e);
             }
@@ -91,68 +101,46 @@ public abstract class DockerBaseStep extends Step {
 
         private DockerClient buildDockerClient() throws Exception {
             TaskListener listener = getContext().get(TaskListener.class);
-            EnvVars env = getContext().get(EnvVars.class);
-            String dockerHost = step.getDockerHost() != null ? step.getDockerHost() : env.expand(env.get(DockerConsts.DOCKER_HOST));
-            String dockerCertPath =
-                    step.getDockerCertPath() != null ? step.getDockerCertPath() : env.expand(env.get(DockerConsts.DOCKER_CERT_PATH));
 
-            listener.getLogger().println("dockerHost:" + dockerHost);
-            listener.getLogger().println("dockerCertPath:" + dockerCertPath);
+            listener.getLogger().println("dockerHost:" + step.getDockerHost());
+            listener.getLogger().println("dockerCertPath:" + step.getDockerCertPath());
             DefaultDockerClient.Builder builder = DefaultDockerClient.fromEnv().readTimeoutMillis(0);
-            if (StringUtils.isNoneBlank(dockerHost)) {
-                builder.uri(dockerHost);
+
+            if (StringUtils.isNoneBlank(step.getDockerHost())) {
+                builder.uri(step.getDockerHost());
             }
 
-            if (StringUtils.isNotBlank(dockerCertPath)) {
+            if (StringUtils.isNotBlank(step.getDockerCertPath())) {
                 FilePath workspace = getContext().get(FilePath.class);
-                FilePath certDir = workspace.child(dockerCertPath);
-                listener.getLogger().println("workspace.Remote:" + workspace.getRemote());
-                listener.getLogger().println("certDir.Remote:" + certDir.getRemote());
+                FilePath certDir = workspace.child(step.getDockerCertPath());
                 if (certDir.exists()) {
                     Optional<DockerCertificatesStore> certs =
                             DockerCertificates.builder().dockerCertPath(Paths.get(certDir.toURI())).build();
                     if (certs.isPresent()) {
-                        listener.getLogger().println("certs found");
                         builder.dockerCertificates(certs.get());
                     }
                 }
             }
-
-            registryAuth(env, builder);
-
+            builder.registryAuthSupplier(registryAuth());
             return builder.build();
         }
 
-        private void registryAuth(EnvVars env, DefaultDockerClient.Builder builder) {
+        private RegistryAuthSupplier registryAuth() {
 
             List<RegistryAuthSupplier> suppliers = new ArrayList<>();
-            String registryUrl =
-                    step.getRegistryUrl() != null ? step.getRegistryUrl() : env.expand(env.get(DockerConsts.DOCKER_REGISTRY_URL));
+            if (StringUtils.isNotBlank(step.getRegistryUrl())) {
 
-            if (StringUtils.isNotBlank(registryUrl)) {
                 RegistryAuth.Builder registryAuthBuilder = RegistryAuth.builder();
-                registryAuthBuilder.serverAddress(registryUrl);
-
-                String registryUsername = step.getRegistryUsername() != null ? step.getRegistryUsername() :
-                        env.expand(env.get(DockerConsts.DOCKER_REGISTRY_USERNAME));
-                String registryPassword = step.getRegistryPassword() != null ? step.getRegistryPassword() :
-                        env.expand(env.get(DockerConsts.DOCKER_REGISTRY_PASSWORD));
-
-                if (StringUtils.isNotBlank(registryUsername)) {
-                    registryAuthBuilder.username(registryUsername);
-                }
-                if (StringUtils.isNotBlank(registryPassword)) {
-                    registryAuthBuilder.password(registryPassword);
-                }
-
+                registryAuthBuilder.serverAddress(step.getRegistryUrl());
+                registryAuthBuilder.username(step.getRegistryUsername());
+                registryAuthBuilder.password(step.getRegistryPassword());
                 RegistryAuth registryAuth = registryAuthBuilder.build();
 
-                RegistryConfigs configsForBuild = RegistryConfigs.create(ImmutableMap.of(
-                        registryAuth.serverAddress(), registryAuth
-                ));
-                suppliers.add(new FixedRegistryAuthSupplier(registryAuth, configsForBuild));
+                RegistryConfigs registryConfigs = RegistryConfigs.create(ImmutableMap.of(registryAuth.serverAddress(), registryAuth));
+                suppliers.add(new FixedRegistryAuthSupplier(registryAuth, registryConfigs));
             }
-            builder.registryAuthSupplier(new MultiRegistryAuthSupplier(suppliers));
+            return new MultiRegistryAuthSupplier(suppliers);
+
         }
     }
 
@@ -161,7 +149,7 @@ public abstract class DockerBaseStep extends Step {
     public static abstract class DockerStepDescriptor extends StepDescriptor {
         @Override
         public Set<? extends Class<?>> getRequiredContext() {
-            return ImmutableSet.of(TaskListener.class);
+            return ImmutableSet.of(TaskListener.class, FilePath.class);
         }
 
         @Nonnull

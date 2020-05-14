@@ -43,12 +43,21 @@ public class DockerStartStepTest {
 
     @Test
     public void startTest() throws Exception {
-        String script = String.format(
-                "script {\n" +
-                        "dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                        "\n}",
-                containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
-                Docker.DOCKER_REGISTRY_PASSWORD);
+
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
+                Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
         job.setDefinition(new CpsFlowDefinition(script, true));
@@ -67,12 +76,20 @@ public class DockerStartStepTest {
 
     @Test
     public void startTestByName() throws Exception {
-        String script = String.format(
-                "script {\n" +
-                        "dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                        "\n}",
-                name, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL, Docker.DOCKER_REGISTRY_USERNAME,
-                Docker.DOCKER_REGISTRY_PASSWORD);
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, name, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
+                Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
         job.setDefinition(new CpsFlowDefinition(script, true));
@@ -91,12 +108,20 @@ public class DockerStartStepTest {
 
     @Test
     public void failOnNotFound() throws Exception {
-        String script = String.format(
-                "script {\n" +
-                        "dockerStart container:'%s',failWhenNotFound:true, dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                        "\n}",
-                UUID.randomUUID().toString(), Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REGISTRY_URL,
-                Docker.DOCKER_REGISTRY_USERNAME, Docker.DOCKER_REGISTRY_PASSWORD);
+        String format = "pipeline {\n" +
+                "    agent any\n" +
+                "    stages {\n" +
+                "        stage(\"start\") {\n" +
+                "            steps {\n" +
+                "               script {\n" +
+                "                   dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "               }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String script = String.format(format, UUID.randomUUID().toString(), Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
+                Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
         job.setDefinition(new CpsFlowDefinition(script, true));

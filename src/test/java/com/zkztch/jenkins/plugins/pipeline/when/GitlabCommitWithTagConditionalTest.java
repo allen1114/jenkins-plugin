@@ -66,7 +66,7 @@ public class GitlabCommitWithTagConditionalTest {
                 "    }\n" +
                 "}";
         String script =
-                String.format(format, GitlabConsts.GITLAB_HOST, Gitlab.host,
+                String.format(format, GitlabConsts.GITLAB_URL, Gitlab.host,
                         GitlabConsts.GITLAB_TOKEN, Gitlab.token,
                         GitlabConsts.GITLAB_NAMESPACE, project.getNamespace().getPath(),
                         GitlabConsts.GITLAB_PROJECT, project.getPath(),
@@ -138,7 +138,7 @@ public class GitlabCommitWithTagConditionalTest {
                 "    }\n" +
                 "}";
         String script =
-                String.format(format, GitlabConsts.GITLAB_HOST, Gitlab.host,
+                String.format(format, GitlabConsts.GITLAB_URL, Gitlab.host,
                         GitlabConsts.GITLAB_TOKEN, Gitlab.token,
                         GitlabConsts.GITLAB_NAMESPACE, project.getNamespace().getPath(),
                         GitlabConsts.GITLAB_PROJECT, project.getPath(),
