@@ -87,7 +87,6 @@ public abstract class GitlabBaseStep extends Step {
 
         @Override
         public boolean start() throws Exception {
-
             GitLabApi gitLabApi = new GitLabApi(step.getHost(), step.getToken());
             gitLabApi.setIgnoreCertificateErrors(true);
 
