@@ -11,7 +11,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.PrintStream;
 import java.util.List;
 
-public class GitlabDeleteTagStep extends GitlabBaseStep {
+public class GitlabDeleteTagStep extends AbstractGitlabStep {
 
     public static final String STEP = "gitlabDeleteTag";
 

@@ -11,7 +11,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
-public class GitlabGetCommitFieldStep extends GitlabBaseStep {
+public class GitlabGetCommitFieldStep extends AbstractGitlabStep {
 
     public static final String STEP = "gitlabGetCommitField";
 

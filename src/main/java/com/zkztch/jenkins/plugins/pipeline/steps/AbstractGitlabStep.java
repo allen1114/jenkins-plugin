@@ -1,7 +1,6 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.google.common.collect.ImmutableSet;
-import com.zkztch.jenkins.plugins.pipeline.DockerConsts;
 import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
@@ -18,7 +17,7 @@ import javax.annotation.Nonnull;
 import java.io.PrintStream;
 import java.util.Set;
 
-public abstract class GitlabBaseStep extends Step {
+public abstract class AbstractGitlabStep extends Step {
 
     private String host;
     private String token;
@@ -70,12 +69,13 @@ public abstract class GitlabBaseStep extends Step {
 
     @Override
     public final StepExecution start(StepContext context) throws Exception {
+        this.loadEnv(context.get(EnvVars.class));
         return new Execution<>(context, this);
     }
 
     public abstract Object doStart(StepContext context, PrintStream logger, GitLabApi gitLabApi, Project project) throws Exception;
 
-    public static class Execution<T extends GitlabBaseStep> extends StepExecution {
+    public static class Execution<T extends AbstractGitlabStep> extends StepExecution {
 
         private T step;
 
@@ -86,7 +86,6 @@ public abstract class GitlabBaseStep extends Step {
 
         @Override
         public boolean start() throws Exception {
-            step.loadEnv(getContext().get(EnvVars.class));
 
             GitLabApi gitLabApi = new GitLabApi(step.getHost(), step.getToken());
             gitLabApi.setIgnoreCertificateErrors(true);

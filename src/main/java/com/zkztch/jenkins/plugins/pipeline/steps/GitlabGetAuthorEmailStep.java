@@ -8,7 +8,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.PrintStream;
 
-public class GitlabGetAuthorEmailStep extends GitlabBaseStep {
+public class GitlabGetAuthorEmailStep extends AbstractGitlabStep {
     public static final String STEP = "gitlabGetAuthorEmail";
 
     private String commit;

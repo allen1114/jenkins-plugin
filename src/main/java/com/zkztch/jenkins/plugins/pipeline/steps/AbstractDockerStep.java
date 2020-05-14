@@ -76,7 +76,7 @@ public abstract class AbstractDockerStep extends Step {
 
     @Override
     public final StepExecution start(StepContext context) throws Exception {
-
+        this.loadEnv(context.get(EnvVars.class));
         return new AbstractDockerStep.Execution<>(context, this);
     }
 
@@ -90,7 +90,6 @@ public abstract class AbstractDockerStep extends Step {
 
         @Override
         public boolean start() throws Exception {
-            step.loadEnv(getContext().get(EnvVars.class));
             DockerClient dockerClient = buildDockerClient();
             try {
                 getContext().onSuccess(step.doStart(getContext(), getContext().get(TaskListener.class).getLogger(), dockerClient));

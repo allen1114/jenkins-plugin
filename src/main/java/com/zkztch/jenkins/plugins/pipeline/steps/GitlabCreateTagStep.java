@@ -11,7 +11,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.PrintStream;
 import java.util.List;
 
-public class GitlabCreateTagStep extends GitlabBaseStep {
+public class GitlabCreateTagStep extends AbstractGitlabStep {
     public static final String STEP = "gitlabCreateTag";
 
     private String tag;

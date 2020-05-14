@@ -11,7 +11,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.PrintStream;
 import java.util.List;
 
-public class GitlabCreateBranchStep extends GitlabBaseStep {
+public class GitlabCreateBranchStep extends AbstractGitlabStep {
 
     public static final String STEP = "gitlabCreateBranch";
     private String branch;

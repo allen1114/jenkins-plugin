@@ -11,7 +11,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.PrintStream;
 import java.util.List;
 
-public class GitlabDeleteBranchStep extends GitlabBaseStep {
+public class GitlabDeleteBranchStep extends AbstractGitlabStep {
     public static final String STEP = "gitlabDeleteBranch";
 
     private String branch;

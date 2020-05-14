@@ -8,7 +8,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.PrintStream;
 
-public class GitlabUnprotectBranchStep extends GitlabBaseStep {
+public class GitlabUnprotectBranchStep extends AbstractGitlabStep {
 
     public static final String STEP = "gitlabUnprotectBranch";
 

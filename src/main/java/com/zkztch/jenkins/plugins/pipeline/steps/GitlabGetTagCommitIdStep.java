@@ -10,7 +10,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.PrintStream;
 import java.util.List;
 
-public class GitlabGetTagCommitIdStep extends GitlabBaseStep {
+public class GitlabGetTagCommitIdStep extends AbstractGitlabStep {
     public static final String STEP = "gitlabGetTagCommitId";
 
     private String tag;
