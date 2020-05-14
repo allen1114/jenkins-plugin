@@ -88,14 +88,14 @@ public class DefaultDockerRegistryClient implements DockerRegistryClient {
         }
     }
 
-    private <T> T request(final String method, final GenericType<T> type, final WebTarget resource, final Invocation.Builder request)
-            throws DockerException, InterruptedException {
-        try {
-            return auth(request).async().method(method, type).get();
-        } catch (ExecutionException | MultiException e) {
-            throw propagate(method, resource, e);
-        }
-    }
+//    private <T> T request(final String method, final GenericType<T> type, final WebTarget resource, final Invocation.Builder request)
+//            throws DockerException, InterruptedException {
+//        try {
+//            return auth(request).async().method(method, type).get();
+//        } catch (ExecutionException | MultiException e) {
+//            throw propagate(method, resource, e);
+//        }
+//    }
 
     private RuntimeException propagate(final String method, final WebTarget resource, final Exception ex)
             throws DockerException, InterruptedException {
