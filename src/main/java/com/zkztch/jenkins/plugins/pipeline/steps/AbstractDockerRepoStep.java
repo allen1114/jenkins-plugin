@@ -1,8 +1,8 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.google.common.collect.ImmutableSet;
-import com.zkztch.docker.DefaultDockerRegistryClient;
-import com.zkztch.docker.DockerRegistryClient;
+import com.zkztch.docker.registry.DefaultDockerRegistryClient;
+import com.zkztch.docker.registry.DockerRegistryClient;
 import com.zkztch.jenkins.plugins.pipeline.DockerConsts;
 import hudson.EnvVars;
 import hudson.model.TaskListener;
@@ -19,33 +19,31 @@ import java.io.PrintStream;
 import java.util.Set;
 
 @Getter
-public abstract class AbstractDockerRegistryStep extends Step {
+public abstract class AbstractDockerRepoStep extends Step {
 
-    private String registryUrl;
-    private String registryUsername;
-    private String registryPassword;
+    private String url;
+    private String username;
+    private String password;
 
     @DataBoundSetter
-    public void setRegistryUrl(String registryUrl) {
-        this.registryUrl = registryUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @DataBoundSetter
-    public void setRegistryUsername(String registryUsername) {
-        this.registryUsername = registryUsername;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @DataBoundSetter
-    public void setRegistryPassword(String registryPassword) {
-        this.registryPassword = registryPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void loadEnv(EnvVars env) {
-        registryUrl = StringUtils.isNotBlank(registryUrl) ? registryUrl : env.expand(env.get(DockerConsts.DOCKER_REPO_HOST));
-        registryUsername =
-                StringUtils.isNotBlank(registryUsername) ? registryUsername : env.expand(env.get(DockerConsts.DOCKER_REPO_USERNAME));
-        registryPassword =
-                StringUtils.isNotBlank(registryPassword) ? registryPassword : env.expand(env.get(DockerConsts.DOCKER_REPO_PASSWORD));
+        url = StringUtils.isNotBlank(url) ? url : env.expand(env.get(DockerConsts.DOCKER_REPO_URL));
+        username = StringUtils.isNotBlank(username) ? username : env.expand(env.get(DockerConsts.DOCKER_REPO_USERNAME));
+        password = StringUtils.isNotBlank(password) ? password : env.expand(env.get(DockerConsts.DOCKER_REPO_PASSWORD));
     }
 
     protected abstract Object doStart(StepContext context, PrintStream logger, DockerRegistryClient dockerRegistryClient) throws Exception;
@@ -53,10 +51,10 @@ public abstract class AbstractDockerRegistryStep extends Step {
     @Override
     public StepExecution start(StepContext context) throws Exception {
         this.loadEnv(context.get(EnvVars.class));
-        return new AbstractDockerRegistryStep.Execution<>(context, this);
+        return new AbstractDockerRepoStep.Execution<>(context, this);
     }
 
-    public static class Execution<T extends AbstractDockerRegistryStep> extends StepExecution {
+    public static class Execution<T extends AbstractDockerRepoStep> extends StepExecution {
         private T step;
 
         public Execution(@Nonnull StepContext context, T step) {
@@ -67,8 +65,8 @@ public abstract class AbstractDockerRegistryStep extends Step {
         @Override
         public boolean start() throws Exception {
             DockerRegistryClient dockerRegistryClient =
-                    DefaultDockerRegistryClient.builder().uri(step.getRegistryUrl()).username(step.getRegistryUsername())
-                            .password(step.getRegistryPassword()).build();
+                    DefaultDockerRegistryClient.builder().uri(step.getUrl()).username(step.getUsername()).password(step.getPassword())
+                            .build();
             try {
                 getContext().onSuccess(step.doStart(getContext(), getContext().get(TaskListener.class).getLogger(), dockerRegistryClient));
             } catch (Exception e) {

@@ -1,7 +1,7 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
-import com.zkztch.jenkins.test.Gitlab;
-import com.zkztch.jenkins.test.Jenkins;
+import com.zkztch.test.Gitlab;
+import com.zkztch.test.Jenkins;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Commit;

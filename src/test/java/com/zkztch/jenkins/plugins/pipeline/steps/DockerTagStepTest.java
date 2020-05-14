@@ -2,8 +2,8 @@ package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.messages.Image;
-import com.zkztch.jenkins.test.Docker;
-import com.zkztch.jenkins.test.Jenkins;
+import com.zkztch.test.Docker;
+import com.zkztch.test.Jenkins;
 import lombok.extern.slf4j.Slf4j;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;

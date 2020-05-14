@@ -1,9 +1,9 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.spotify.docker.client.exceptions.DockerException;
-import com.zkztch.jenkins.test.Docker;
-import com.zkztch.jenkins.test.Jenkins;
-import com.zkztch.jenkins.test.TestPropertiesUtils;
+import com.zkztch.test.Docker;
+import com.zkztch.test.Jenkins;
+import com.zkztch.test.TestPropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -18,14 +18,14 @@ import org.jvnet.hudson.test.JenkinsRule;
 import java.util.UUID;
 
 @Slf4j
-public class DockerRegistryTagsListStepTest {
+public class DockerRepoListTagsStepTest {
 
     @ClassRule public static final BuildWatcher buildWatcher = Jenkins.buildWatcher;
     @ClassRule public static final JenkinsRule jenkinsRule = Jenkins.jenkinsRule;
 
-    private static final String imageName = TestPropertiesUtils.getProperty("docker.registry.test.image");
-    private static final String tagName = TestPropertiesUtils.getProperty("docker.registry.test.tag");
-    private static final String image = Docker.DOCKER_REPO_HOST + "/" + imageName + ":" + tagName;
+    private static final String repository = TestPropertiesUtils.getProperty("docker.registry.test.repository");
+    private static final String tag = TestPropertiesUtils.getProperty("docker.registry.test.tag");
+    private static final String image = Docker.DOCKER_REPO_HOST + "/" + repository + ":" + tag;
 
     @Before
     public void setup() throws DockerException, InterruptedException {
@@ -48,15 +48,14 @@ public class DockerRegistryTagsListStepTest {
                 "        stage(\"start\") {\n" +
                 "            steps {\n" +
                 "               script {\n" +
-                "                   def list = dockerRegistryTagsList image:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "                   def list = dockerRepoListTags repository:'%s', url:'%s', username:'%s', password:'%s'\n" +
                 "                   for(String tag : list){echo tag}\n" +
                 "               }\n" +
                 "            }\n" +
                 "        }\n" +
                 "    }\n" +
                 "}";
-        String script = String.format(format, imageName,TestPropertiesUtils.getProperty("docker.registory.host"), Docker.DOCKER_REPO_USERNAME,
-                Docker.DOCKER_REPO_PASSWORD);
+        String script = String.format(format, repository, Docker.DOCKER_REPO_URL, Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
 
         log.info("script = " + script);
         WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, UUID.randomUUID().toString());
@@ -64,6 +63,7 @@ public class DockerRegistryTagsListStepTest {
         WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
 
         jenkinsRule.waitUntilNoActivity();
+        jenkinsRule.assertLogContains(tag, run);
 
     }
 

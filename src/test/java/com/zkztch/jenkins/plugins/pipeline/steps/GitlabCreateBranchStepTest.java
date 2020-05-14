@@ -1,10 +1,9 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
 import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
-import com.zkztch.jenkins.test.Gitlab;
-import com.zkztch.jenkins.test.Jenkins;
+import com.zkztch.test.Gitlab;
+import com.zkztch.test.Jenkins;
 import hudson.model.Result;
-import hudson.plugins.git.GitSCM;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab4j.api.GitLabApiException;
@@ -17,7 +16,6 @@ import org.junit.*;
 import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j

@@ -1,8 +1,8 @@
 package com.zkztch.jenkins.plugins.pipeline.when;
 
 import com.zkztch.jenkins.plugins.pipeline.GitlabConsts;
-import com.zkztch.jenkins.test.Gitlab;
-import com.zkztch.jenkins.test.Jenkins;
+import com.zkztch.test.Gitlab;
+import com.zkztch.test.Jenkins;
 import hudson.plugins.git.GitSCM;
 import lombok.extern.slf4j.Slf4j;
 import org.gitlab4j.api.GitLabApiException;

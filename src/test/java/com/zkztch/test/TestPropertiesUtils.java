@@ -1,51 +1,19 @@
-package com.zkztch.jenkins.test;
+package com.zkztch.test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.google.common.io.Resources;
+
+import java.io.*;
 import java.util.Properties;
 
 public class TestPropertiesUtils {
 
     private static final Properties testProperties = new Properties();
-    private static final String propertiesFileName = "test.properties";
 
     static {
-        boolean propertiesLoaded = false;
-        // Get the maven basedir, we use it to locate the default properties for the unit tests
-        String basedir = (String) System.getProperties().get("basedir");
-
-        // If we are performing a release in target/checkout, trim off the target/checkout directory from basedir
-        if (basedir != null && (basedir.endsWith("target/checkout") || basedir.endsWith("target\\checkout"))) {
-            basedir = basedir.substring(0, basedir.length() - 15);
-        }
-
-        File propertiesFile = new File(basedir, "src/test/resources/" + propertiesFileName);
-        if (propertiesFile.exists()) {
-            try (InputStreamReader input = new InputStreamReader(new FileInputStream(propertiesFile))) {
-                testProperties.load(input);
-                System.out.format("Loaded base test properties from: %n%s%n", propertiesFile.getAbsolutePath());
-                propertiesLoaded = true;
-            } catch (IOException ioe) {
-                System.err.println("Error loading base test properties, error=" + ioe.getMessage());
-            }
-        }
-
-        // Now load the overriding test properties if found in the user's home directory
-        propertiesFile = new File((String) System.getProperties().get("user.home"), propertiesFileName);
-        if (propertiesFile.exists()) {
-            try (InputStreamReader input = new InputStreamReader(new FileInputStream(propertiesFile))) {
-                testProperties.load(input);
-                System.out.format("Loaded overriding test properties from: %n%s%n", propertiesFile.getAbsolutePath());
-                propertiesLoaded = true;
-            } catch (IOException ioe) {
-                System.err.println("Error loading overriding test properties, error=" + ioe.getMessage());
-            }
-        }
-
-        if (!propertiesLoaded) {
-            System.out.println("No test properties have been loaded!");
+        try (InputStream inputStream = Resources.newInputStreamSupplier(Resources.getResource("test.properties")).getInput()) {
+            testProperties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

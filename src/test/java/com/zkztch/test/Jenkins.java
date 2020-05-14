@@ -1,4 +1,4 @@
-package com.zkztch.jenkins.test;
+package com.zkztch.test;
 
 import org.junit.ClassRule;
 import org.jvnet.hudson.test.BuildWatcher;

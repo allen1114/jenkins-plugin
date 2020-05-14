@@ -1,30 +1,28 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
-import com.zkztch.docker.DockerRegistryClient;
+import com.zkztch.docker.registry.DockerRegistryClient;
 import hudson.Extension;
-import lombok.Data;
+import lombok.Getter;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.PrintStream;
-import java.util.List;
 
-@Data
-public class DockerRegistryTagsListStep extends AbstractDockerRegistryStep {
+@Getter
+public class DockerRepoListTagsStep extends AbstractDockerRepoStep {
 
-    public static final String STEP = "dockerRegistryTagsList";
+    public static final String STEP = "dockerRepoListTags";
 
-    private String image;
+    private String repository;
 
     @DataBoundConstructor
-    public DockerRegistryTagsListStep(String image) {
-        this.image = image;
+    public DockerRepoListTagsStep(String repository) {
+        this.repository = repository;
     }
 
     @Override
     protected Object doStart(StepContext context, PrintStream logger, DockerRegistryClient dockerRegistryClient) throws Exception {
-        List<String> strings = dockerRegistryClient.tagsList(image).getTags();
-        return strings;
+        return dockerRegistryClient.listTags(repository);
     }
 
     @Extension

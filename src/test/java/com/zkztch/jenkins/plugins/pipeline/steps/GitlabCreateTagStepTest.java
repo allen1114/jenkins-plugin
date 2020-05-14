@@ -1,7 +1,7 @@
 package com.zkztch.jenkins.plugins.pipeline.steps;
 
-import com.zkztch.jenkins.test.Gitlab;
-import com.zkztch.jenkins.test.Jenkins;
+import com.zkztch.test.Gitlab;
+import com.zkztch.test.Jenkins;
 import hudson.model.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,4 +1,4 @@
-package com.zkztch.jenkins.test;
+package com.zkztch.test;
 
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
@@ -14,7 +14,7 @@ public class Gitlab {
     public static final GitLabApi api;
 
     static {
-        host = TestPropertiesUtils.getProperty("gitlab.host");
+        host = TestPropertiesUtils.getProperty("gitlab.url");
         token = TestPropertiesUtils.getProperty("gitlab.token");
         api = new GitLabApi(host, token);
         api.setIgnoreCertificateErrors(true);
