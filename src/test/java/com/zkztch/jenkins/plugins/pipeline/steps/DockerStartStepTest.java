@@ -59,7 +59,7 @@ public class DockerStartStepTest {
         String script = String.format(format, containerId, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
                 Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
-        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, name);
         job.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
         jenkinsRule.waitUntilNoActivity();
@@ -91,7 +91,7 @@ public class DockerStartStepTest {
         String script = String.format(format, name, Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
                 Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
-        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, name);
         job.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
         jenkinsRule.waitUntilNoActivity();
@@ -114,7 +114,7 @@ public class DockerStartStepTest {
                 "        stage(\"start\") {\n" +
                 "            steps {\n" +
                 "               script {\n" +
-                "                   dockerStart container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "                   dockerStart container:'%s',failWhenNotFound: true, dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
                 "               }\n" +
                 "            }\n" +
                 "        }\n" +
@@ -123,7 +123,7 @@ public class DockerStartStepTest {
         String script = String.format(format, UUID.randomUUID().toString(), Docker.DOCKER_HOST, Docker.DOCKER_CERT_PATH, Docker.DOCKER_REPO_HOST,
                 Docker.DOCKER_REPO_USERNAME, Docker.DOCKER_REPO_PASSWORD);
         log.info("script = " + script);
-        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "startTest");
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, name);
         job.setDefinition(new CpsFlowDefinition(script, true));
         jenkinsRule.assertBuildStatus(Result.FAILURE, job.scheduleBuild2(0));
         jenkinsRule.waitUntilNoActivity();

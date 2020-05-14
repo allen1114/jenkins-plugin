@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.util.UUID;
+
 @Slf4j
 public class DockerRegistryTagsListStepTest {
 
@@ -57,7 +59,7 @@ public class DockerRegistryTagsListStepTest {
                 Docker.DOCKER_REPO_PASSWORD);
 
         log.info("script = " + script);
-        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, "pushTest");
+        WorkflowJob job = jenkinsRule.createProject(WorkflowJob.class, UUID.randomUUID().toString());
         job.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
 
