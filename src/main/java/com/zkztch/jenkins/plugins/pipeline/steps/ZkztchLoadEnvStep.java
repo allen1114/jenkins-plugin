@@ -49,6 +49,8 @@ public class ZkztchLoadEnvStep extends Step {
     }
 
     public static class Execution extends StepExecution {
+        private static final long serialVersionUID = 3098846875736274283L;
+
         private transient ZkztchLoadEnvStep step;
 
         public Execution(@Nonnull StepContext context, ZkztchLoadEnvStep step) {
