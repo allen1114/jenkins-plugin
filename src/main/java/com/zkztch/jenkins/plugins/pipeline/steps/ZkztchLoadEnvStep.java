@@ -49,7 +49,7 @@ public class ZkztchLoadEnvStep extends Step {
     }
 
     public static class Execution extends StepExecution {
-        private ZkztchLoadEnvStep step;
+        private transient ZkztchLoadEnvStep step;
 
         public Execution(@Nonnull StepContext context, ZkztchLoadEnvStep step) {
             super(context);
