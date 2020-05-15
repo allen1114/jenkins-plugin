@@ -64,10 +64,11 @@ public class ZkztchLoadEnvStep extends Step {
             if (!StringUtils.startsWith(step.getAddr(), "http://") && !StringUtils.startsWith(step.getAddr(), "https://")) {
                 uri.append("http://");
             }
+            uri.append(step.getAddr());
             if (!StringUtils.endsWith(step.getAddr(), "/")) {
                 uri.append("/");
             }
-            uri.append(step.getAddr()).append("env");
+            uri.append("env");
             if (!StringUtils.startsWith(step.getPath(), "/")) {
                 uri.append("/");
             }
