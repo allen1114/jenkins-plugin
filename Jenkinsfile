@@ -14,7 +14,7 @@ pipeline {
                     emailext subject: "${JOB_NAME}构建成功",
                             attachLog: true,
                             body: "${JOB_NAME}构建成功",
-                            attachmentsPattern: '**/zkztch-jenkins-plugin.hpi',
+//                            attachmentsPattern: '**/zkztch-jenkins-plugin.hpi',
                             to: "caizl@zkztch.com"
                 }
 

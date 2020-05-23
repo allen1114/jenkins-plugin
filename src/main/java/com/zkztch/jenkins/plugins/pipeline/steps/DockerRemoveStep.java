@@ -4,6 +4,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.Container;
 import hudson.Extension;
+import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class DockerRemoveStep extends AbstractDockerContainerStep {
@@ -13,7 +14,7 @@ public class DockerRemoveStep extends AbstractDockerContainerStep {
     }
 
     @Override
-    protected Object doStep(DockerClient dockerClient, Container container) throws DockerException, InterruptedException {
+    protected Object doStep(StepContext context, DockerClient dockerClient, Container container) throws DockerException, InterruptedException {
         dockerClient.removeContainer(container.id());
         return null;
     }

@@ -4,12 +4,7 @@
     "8080/tcp": { }
   },
   "HostConfig": {
-    "PortBindings": {
-      "80/tcp": [
-        {
-          "HostPort": "8003"
-        }
-      ]
-    }
+    "NetworkMode": "zkztch_network"
   }
+
 }

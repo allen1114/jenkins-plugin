@@ -32,12 +32,12 @@ public abstract class AbstractDockerContainerStep extends AbstractDockerStep {
         for (Container c : containers) {
             String idlt = c.id().toLowerCase().trim();
             if ((StringUtils.equals(idlt, clt)) || (StringUtils.length(clt) >= 12 && StringUtils.startsWith(idlt, clt))) {
-                return doStep(dockerClient, c);
+                return doStep(context, dockerClient, c);
             }
             for (String name : c.names()) {
                 if ((StringUtils.startsWith(name, "/") && StringUtils.equals(StringUtils.substringAfter(name, "/"), container))
                         || StringUtils.equals(name, container)) {
-                    return doStep(dockerClient, c);
+                    return doStep(context, dockerClient, c);
                 }
             }
         }
@@ -47,5 +47,7 @@ public abstract class AbstractDockerContainerStep extends AbstractDockerStep {
         return null;
     }
 
-    protected abstract Object doStep(DockerClient dockerClient, Container container) throws DockerException, InterruptedException;
+    protected abstract Object doStep(StepContext context, DockerClient dockerClient, Container container)
+            throws Exception;
+
 }
