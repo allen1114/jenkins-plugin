@@ -31,8 +31,8 @@ public class EnvExpendStep extends Step {
     }
 
     public static class Execution extends StepExecution {
-        private static final long serialVersionUID = 3098846875736274283L;
 
+        private static final long serialVersionUID = -7607022083139454749L;
         private transient EnvExpendStep step;
 
         public Execution(@Nonnull StepContext context, EnvExpendStep step) {
