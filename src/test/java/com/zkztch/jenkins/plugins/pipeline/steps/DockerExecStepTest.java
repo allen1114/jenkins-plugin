@@ -51,8 +51,8 @@ public class DockerExecStepTest {
                 "        stage(\"start\") {\n" +
                 "            steps {\n" +
                 "               script {\n" +
-                "                   def exitcode = dockerExec cmd:'%s', container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
-                "                   echo 'exitcode='+exitcode\n" +
+                "                   def output = dockerExec cmd:'%s', container:'%s', dockerHost:'%s', dockerCertPath:'%s', registryUrl:'%s', registryUsername:'%s', registryPassword:'%s'\n" +
+                "                   echo 'output='+output\n" +
                 "               }\n" +
                 "            }\n" +
                 "        }\n" +
@@ -65,6 +65,6 @@ public class DockerExecStepTest {
         job.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun run = jenkinsRule.assertBuildStatusSuccess(job.scheduleBuild2(0));
         jenkinsRule.waitUntilNoActivity();
-        jenkinsRule.assertLogContains("exitcode=0", run);
+        jenkinsRule.assertLogContains("output=", run);
     }
 }

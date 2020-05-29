@@ -100,10 +100,6 @@ public abstract class AbstractDockerStep extends Step {
         }
 
         private DockerClient buildDockerClient() throws Exception {
-            TaskListener listener = getContext().get(TaskListener.class);
-
-            listener.getLogger().println("dockerHost:" + step.getDockerHost());
-            listener.getLogger().println("dockerCertPath:" + step.getDockerCertPath());
             DefaultDockerClient.Builder builder = DefaultDockerClient.fromEnv().readTimeoutMillis(0);
 
             if (StringUtils.isNoneBlank(step.getDockerHost())) {
